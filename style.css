@@ -453,6 +453,8 @@ a {
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
+  z-index: 20;
 }
 
 .social-icon-btn {
@@ -467,6 +469,10 @@ a {
   font-size: 20px;
   color: var(--text-muted);
   transition: var(--transition);
+  position: relative;
+  z-index: 25;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .social-icon-btn:hover {
