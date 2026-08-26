@@ -416,4 +416,228 @@ document.addEventListener("DOMContentLoaded", () => {
             retina_detect: true
         });
     }
+
+    // ==========================================================================
+    // 10. Accent Theme Color Selector Logic
+    // ==========================================================================
+    const accentDots = document.querySelectorAll(".accent-dot");
+    
+    const setAccentColor = (accentName) => {
+        document.body.setAttribute("data-accent", accentName);
+        accentDots.forEach(dot => {
+            if (dot.getAttribute("data-accent") === accentName) {
+                dot.classList.add("active");
+            } else {
+                dot.classList.remove("active");
+            }
+        });
+        localStorage.setItem("accentColorPreference", accentName);
+    };
+
+    const savedAccent = localStorage.getItem("accentColorPreference");
+    if (savedAccent) {
+        setAccentColor(savedAccent);
+    }
+
+    accentDots.forEach(dot => {
+        dot.addEventListener("click", () => {
+            const accent = dot.getAttribute("data-accent");
+            if (accent) setAccentColor(accent);
+        });
+    });
+
+    // ==========================================================================
+    // 11. Interactive Project Detail Modals Dataset & Handler
+    // ==========================================================================
+    const projectsData = {
+        hafa: {
+            title: "HafA DIGITAL — Field & Production Operations Platform",
+            badge: "Full-Stack Operations Platform",
+            role: "Role: Full-Stack Lead Developer",
+            image: "images/hafa.png",
+            desc: "A real-time operations management platform designed for a digital marketing agency to streamline on-field shoot coordination, post-production pipelines, and staff attendance.",
+            features: [
+                "Automated Field Attendance: Integrated GPS Geofence and Haversine distance verification alongside live WebRTC selfie photo capture for ground dispatches.",
+                "End-to-End Production Ledger: Interactive task ledger tracking multi-stage deliverables (Shop, Model, Cameraman, Editor, Delivery status) with dynamic KPI analytics.",
+                "Bi-directional Cloud Sync: Custom webhook integrations via Google Apps Script to synchronize attendance and shoot logs directly into structured cloud spreadsheets.",
+                "Role-Based Access Control (RBAC): Admin Dashboard vs. Field Employee views with secure credential & profile management."
+            ],
+            tags: ["React", "Tailwind CSS", "Firebase Auth", "Firestore", "Google Apps Script", "Geolocation API", "Vercel"],
+            links: [
+                { text: "Live Demo (hafadigital.in)", url: "https://hafadigital.in", isPrimary: true, icon: "fas fa-external-link-alt" }
+            ]
+        },
+        event: {
+            title: "Event Registration & Attendance System",
+            badge: "Web Application",
+            role: "Role: Full-Stack Developer",
+            image: "images/event.png",
+            desc: "Comprehensive web platform engineered with Flask and SQLite to automate college event registrations, admin attendance tracking, and ticket verification.",
+            features: [
+                "Real-time QR Code Ticket Generation for instant check-in verification at event entry.",
+                "Google OAuth 2.0 Integration for secure single sign-on student authentication.",
+                "Admin Control Dashboard with real-time participant analytics and CSV report generation.",
+                "Hosted live on Render cloud platform with automated deployment pipelines."
+            ],
+            tags: ["Flask", "Python", "SQLite", "Google OAuth", "QR Code", "Render"],
+            links: [
+                { text: "Live Demo", url: "https://eventregistrationwebsite.onrender.com", isPrimary: true, icon: "fas fa-external-link-alt" },
+                { text: "GitHub Source", url: "https://github.com/harivasan068-art/EventRegistrationWebsite", isPrimary: false, icon: "fab fa-github" }
+            ]
+        },
+        movie: {
+            title: "AI Movie Recommendation Engine",
+            badge: "AI & Machine Learning",
+            role: "Role: Machine Learning Engineer",
+            image: "images/movie.png",
+            desc: "Intelligent content-based recommendation model built with Python and Scikit-Learn to suggest relevant films based on user preference vectors and metadata similarity.",
+            features: [
+                "Cosine Similarity Algorithm analyzing genre combinations, cast vectors, keywords, and director metadata.",
+                "Feature Extraction & Data Preprocessing pipeline powered by Pandas and NumPy.",
+                "Scalable model deployment ready for web frontend integration.",
+                "Evaluated accuracy against TMDB 5000 movie dataset metrics."
+            ],
+            tags: ["Python", "Scikit-Learn", "Machine Learning", "Pandas", "NumPy"],
+            links: [
+                { text: "View Repository", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
+            ]
+        },
+        happiness: {
+            title: "Global Happiness Index Analytics",
+            badge: "Data Science",
+            role: "Role: Data Analyst",
+            image: "images/happiness.png",
+            desc: "Data analytics project investigating global happiness factors, GDP per capita, social support, and life expectancy across 150+ nations.",
+            features: [
+                "Exploratory Data Analysis (EDA) uncovering regional trends and key predictors of well-being.",
+                "Interactive Heatmap Visualizations built using Matplotlib and Seaborn.",
+                "Regression Analysis evaluating impact of economic vs. social variables on national happiness ranks."
+            ],
+            tags: ["Python", "Pandas", "Matplotlib", "Seaborn", "Data Science"],
+            links: [
+                { text: "View Repository", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
+            ]
+        },
+        hotel: {
+            title: "Hotel Management Desktop System",
+            badge: "Java & Systems",
+            role: "Role: Systems Developer",
+            image: "images/hotel.png",
+            desc: "Desktop management application built with Object-Oriented Java to handle hotel room reservations, guest check-ins/check-outs, and billing invoices.",
+            features: [
+                "Object-Oriented Design (OOP) implementing encapsulation, inheritance, and modular data models.",
+                "Room Availability Matrix tracking single, double, and suite bookings in real time.",
+                "Automated Billing & Receipt Generator for guest checkout operations."
+            ],
+            tags: ["Java", "OOP", "Database Management", "UI Layout"],
+            links: [
+                { text: "View Source", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
+            ]
+        },
+        portfolio: {
+            title: "Personal AI Portfolio Website",
+            badge: "Web Application",
+            role: "Role: UI/UX Designer & Developer",
+            image: "images/portfolio.png",
+            desc: "Modern personal showcase website engineered with obsidian glassmorphism UI, theme accent customizers, and interactive modals.",
+            features: [
+                "Futuristic Obsidian Dark Theme with animated background particles and glow spheres.",
+                "Dynamic Theme Accent Color Switcher (Cyan, Violet, Emerald, Crimson).",
+                "Interactive Project Detail Modals and filterable project grid.",
+                "Fail-safe Contact Form with direct Gmail compose integration."
+            ],
+            tags: ["HTML5", "Vanilla CSS", "JavaScript", "Glassmorphism", "EmailJS"],
+            links: [
+                { text: "View Repository", url: "https://github.com/harivasan068-art/PortfolioWebsite", isPrimary: true, icon: "fab fa-github" }
+            ]
+        },
+        techspark: {
+            title: "TechSpark PR & Leadership Activities",
+            badge: "Leadership & Community",
+            role: "Role: Public Relations Officer @ TechSpark",
+            image: "images/techspark.jpeg",
+            desc: "Leadership and public relations management for TechSpark technical club at Rajalakshmi Institute of Technology.",
+            features: [
+                "Organized and coordinated 5+ major technical events, coding contests, and hackathons.",
+                "Managed technical student community engagement reaching over 830+ participants.",
+                "Executed creative social media campaigns, sponsorship outreach, and event promotions."
+            ],
+            tags: ["Leadership", "Public Relations", "Event Management", "Outreach"],
+            links: [
+                { text: "Contact for Collaboration", url: "#contact", isPrimary: true, icon: "fas fa-handshake" }
+            ]
+        }
+    };
+
+    const projectModal = document.getElementById("project-modal");
+    const modalClose = document.getElementById("modal-close");
+    const modalImg = document.getElementById("modal-img");
+    const modalBadge = document.getElementById("modal-badge");
+    const modalTitle = document.getElementById("modal-title");
+    const modalRole = document.getElementById("modal-role");
+    const modalDesc = document.getElementById("modal-desc");
+    const modalFeatures = document.getElementById("modal-features");
+    const modalTags = document.getElementById("modal-tags");
+    const modalLinks = document.getElementById("modal-links");
+
+    const openModal = (projectId) => {
+        const data = projectsData[projectId];
+        if (!data || !projectModal) return;
+
+        modalImg.src = data.image;
+        modalImg.alt = data.title;
+        modalBadge.textContent = data.badge;
+        modalTitle.textContent = data.title;
+        modalRole.textContent = data.role;
+        modalDesc.textContent = data.desc;
+
+        // Render features
+        modalFeatures.innerHTML = data.features.map(f => `<li>${f}</li>`).join("");
+
+        // Render tags
+        modalTags.innerHTML = data.tags.map(t => `<span class="tag">${t}</span>`).join("");
+
+        // Render links
+        modalLinks.innerHTML = data.links.map(l => `
+            <a href="${l.url}" ${l.url.startsWith("#") ? "" : 'target="_blank"'} class="project-btn ${l.isPrimary ? 'project-btn-primary' : 'project-btn-secondary'}">
+                <i class="${l.icon}"></i> ${l.text}
+            </a>
+        `).join("");
+
+        projectModal.classList.add("active");
+        projectModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeModal = () => {
+        if (!projectModal) return;
+        projectModal.classList.remove("active");
+        projectModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "auto";
+    };
+
+    // Attach click listeners to all open-modal-btn buttons
+    document.querySelectorAll(".open-modal-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const projectId = btn.getAttribute("data-project");
+            if (projectId) openModal(projectId);
+        });
+    });
+
+    if (modalClose) {
+        modalClose.addEventListener("click", closeModal);
+    }
+
+    if (projectModal) {
+        projectModal.addEventListener("click", (e) => {
+            if (e.target === projectModal) closeModal();
+        });
+    }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && projectModal?.classList.contains("active")) {
+            closeModal();
+        }
+    });
 });
