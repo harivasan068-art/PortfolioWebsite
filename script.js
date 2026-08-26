@@ -273,17 +273,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================================================
-    // 8. Contact Form Handler (EmailJS + FormSubmit + Mailto Fallback)
+    // 8. Contact Form Handler (Direct Gmail Web App + FormSubmit + EmailJS)
     // ==========================================================================
     const contactForm = document.getElementById("contact-form");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const messageInput = document.getElementById("message");
+    const gmailComposeBtn = document.getElementById("gmail-compose-btn");
+
+    function updateGmailLink() {
+        if (!gmailComposeBtn) return;
+        const nameVal = nameInput?.value.trim() || "";
+        const emailVal = emailInput?.value.trim() || "";
+        const messageVal = messageInput?.value.trim() || "";
+
+        const subject = nameVal ? `Portfolio Message from ${nameVal}` : "Portfolio Inquiry";
+        const body = `Hi Hari,\n\n${messageVal}\n\nFrom:\nName: ${nameVal}\nEmail: ${emailVal}`;
+
+        gmailComposeBtn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    [nameInput, emailInput, messageInput].forEach(input => {
+        input?.addEventListener("input", updateGmailLink);
+    });
 
     if (contactForm) {
         contactForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const nameVal = document.getElementById("name")?.value.trim() || "";
-            const emailVal = document.getElementById("email")?.value.trim() || "";
-            const messageVal = document.getElementById("message")?.value.trim() || "";
+            const nameVal = nameInput?.value.trim() || "";
+            const emailVal = emailInput?.value.trim() || "";
+            const messageVal = messageInput?.value.trim() || "";
 
             if (!nameVal || !emailVal || !messageVal) {
                 alert("Please fill out all fields.");
@@ -295,75 +315,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             }
-
-            const templateParams = {
-                name: nameVal,
-                from_name: nameVal,
-                user_name: nameVal,
-                email: emailVal,
-                from_email: emailVal,
-                user_email: emailVal,
-                reply_to: emailVal,
-                message: messageVal,
-                to_name: "Hari Vasan"
-            };
 
             let sentSuccessfully = false;
 
-            // Attempt 1: EmailJS
-            if (typeof emailjs !== "undefined") {
+            // Attempt 1: Direct FormSubmit endpoint
+            try {
+                const response = await fetch("https://formsubmit.co/ajax/harivasan068@gmail.com", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: nameVal,
+                        email: emailVal,
+                        message: messageVal,
+                        _subject: `New Portfolio Message from ${nameVal}`
+                    })
+                });
+
+                if (response.ok) {
+                    sentSuccessfully = true;
+                }
+            } catch (err) {
+                console.warn("FormSubmit endpoint failed:", err);
+            }
+
+            // Attempt 2: EmailJS
+            if (!sentSuccessfully && typeof emailjs !== "undefined") {
                 try {
-                    // Try EmailJS send with explicit public key 4th param for compatibility
-                    await emailjs.send("service_b9krrna", "template_7tyksk8", templateParams, "60vg5CdeRJjgUJNRv");
+                    await emailjs.send("service_b9krrna", "template_7tyksk8", {
+                        name: nameVal,
+                        email: emailVal,
+                        message: messageVal,
+                        reply_to: emailVal,
+                        to_name: "Hari Vasan"
+                    }, "60vg5CdeRJjgUJNRv");
                     sentSuccessfully = true;
                 } catch (err) {
-                    console.warn("EmailJS attempt failed, trying backup endpoint...", err);
+                    console.warn("EmailJS attempt failed:", err);
                 }
             }
 
-            // Attempt 2: FormSubmit AJAX Fallback (No registration required, sends directly to harivasan068@gmail.com)
-            if (!sentSuccessfully) {
-                try {
-                    const response = await fetch("https://formsubmit.co/ajax/harivasan068@gmail.com", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                        body: JSON.stringify({
-                            name: nameVal,
-                            email: emailVal,
-                            message: messageVal,
-                            _subject: `New Portfolio Message from ${nameVal}`
-                        })
-                    });
-
-                    if (response.ok) {
-                        sentSuccessfully = true;
-                    }
-                } catch (err) {
-                    console.warn("FormSubmit endpoint failed:", err);
-                }
-            }
-
-            // Outcome handling
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnHtml;
             }
 
-            if (sentSuccessfully) {
-                alert("🚀 Message sent successfully! Please check your Gmail Inbox & Spam folder (harivasan068@gmail.com). Note: If using FormSubmit for the first time, check for an activation email titled 'Action Required: Confirm your email address' to activate automatic forwarding.");
-                contactForm.reset();
-            } else {
-                // Attempt 3: Direct mailto fallback if network or API keys block file:// protocol
-                const mailtoUrl = `mailto:harivasan068@gmail.com?subject=${encodeURIComponent("Portfolio Message from " + nameVal)}&body=${encodeURIComponent("Name: " + nameVal + "\nEmail: " + emailVal + "\n\nMessage:\n" + messageVal)}`;
-                window.location.href = mailtoUrl;
-                alert("Opening your email client to send your message directly to harivasan068@gmail.com...");
-                contactForm.reset();
-            }
+            // Always open Gmail Compose tab with pre-filled details as a 100% guarantee
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=${encodeURIComponent("Portfolio Message from " + nameVal)}&body=${encodeURIComponent("Hi Hari,\n\n" + messageVal + "\n\nFrom:\nName: " + nameVal + "\nEmail: " + emailVal)}`;
+            window.open(gmailUrl, "_blank");
+
+            alert("Opening Gmail compose window to send your message directly to harivasan068@gmail.com! Simply click Send in Gmail.");
+            contactForm.reset();
         });
     }
 
