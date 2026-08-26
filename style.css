@@ -558,6 +558,15 @@ a {
   color: var(--accent-cyan);
   box-shadow: var(--shadow-card);
   animation: floatOrbit 6s ease-in-out infinite;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tech-icon-float:hover {
+  transform: scale(1.2) translateY(-5px);
+  border-color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow);
 }
 
 .tech-icon-float:nth-child(1) { top: 5%; left: 15%; animation-delay: 0s; color: #3776ab; }
