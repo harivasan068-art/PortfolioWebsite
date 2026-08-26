@@ -1,255 +1,413 @@
-// ===============================
-// Typing Animation
-// ===============================
+// ==========================================================================
+// Hari Vasan Portfolio Master JavaScript Logic
+// ==========================================================================
 
-const roles = [
-    "AI & ML Engineer",
-    "Web Developer",
-    "Tech Innovator",
-    "TechSpark Leader",
-    "Problem Solver"
-];
-
-let roleIndex = 0;
-let charIndex = 0;
-
-const typing = document.getElementById("typing");
-
-function typeText() {
-
-    if (charIndex < roles[roleIndex].length) {
-
-        typing.textContent += roles[roleIndex].charAt(charIndex);
-
-        charIndex++;
-
-        setTimeout(typeText, 100);
-
-    } else {
-
-        setTimeout(eraseText, 1500);
-
+document.addEventListener("DOMContentLoaded", () => {
+    // Initialize AOS Animate On Scroll Library
+    if (typeof AOS !== "undefined") {
+        AOS.init({
+            duration: 900,
+            once: true,
+            offset: 80
+        });
     }
-}
 
-function eraseText() {
-
-    if (charIndex > 0) {
-
-        typing.textContent =
-            roles[roleIndex].substring(0, charIndex - 1);
-
-        charIndex--;
-
-        setTimeout(eraseText, 50);
-
-    } else {
-
-        roleIndex++;
-
-        if (roleIndex >= roles.length) {
-            roleIndex = 0;
+    // Initialize EmailJS
+    if (typeof emailjs !== "undefined") {
+        try {
+            emailjs.init({ publicKey: "60vg5CdeRJjgUJNRv" });
+        } catch (e) {
+            emailjs.init("60vg5CdeRJjgUJNRv");
         }
-
-        setTimeout(typeText, 300);
     }
-}
 
+    // ==========================================================================
+    // 1. Navbar Scroll Effect & Scroll-to-Top Button
+    // ==========================================================================
+    const navbar = document.getElementById("navbar");
+    const scrollTopBtn = document.getElementById("scroll-top");
+    const navLinks = document.querySelectorAll(".nav-links a");
 
-// ===============================
-// Counter Animation
-// ===============================
-
-const counters =
-    document.querySelectorAll(".counter");
-
-counters.forEach(counter => {
-
-    counter.innerText = "0";
-
-    const updateCounter = () => {
-
-        const target =
-            +counter.getAttribute("data-target");
-
-        const c =
-            +counter.innerText;
-
-        const increment =
-            target / 100;
-
-        if (c < target) {
-
-            counter.innerText =
-                `${Math.ceil(c + increment)}`;
-
-            setTimeout(updateCounter, 20);
-
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+            navbar?.classList.add("scrolled");
         } else {
-
-            counter.innerText = target;
-
+            navbar?.classList.remove("scrolled");
         }
 
+        if (window.scrollY > 400) {
+            scrollTopBtn?.classList.add("visible");
+        } else {
+            scrollTopBtn?.classList.remove("visible");
+        }
+
+        // Active link highlight on scroll
+        const sections = document.querySelectorAll("section[id]");
+        let currentSectionId = "";
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionHeight = section.offsetHeight;
+
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                currentSectionId = section.getAttribute("id");
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === `#${currentSectionId}`) {
+                link.classList.add("active");
+            }
+        });
+    });
+
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener("click", () => {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+    }
+
+    // ==========================================================================
+    // 2. Mobile Navigation Toggle
+    // ==========================================================================
+    const menuToggle = document.getElementById("menu-toggle");
+    const navLinksMenu = document.getElementById("nav-links");
+
+    if (menuToggle && navLinksMenu) {
+        menuToggle.addEventListener("click", () => {
+            navLinksMenu.classList.toggle("active");
+            const icon = menuToggle.querySelector("i");
+            if (icon) {
+                icon.classList.toggle("fa-bars");
+                icon.classList.toggle("fa-times");
+            }
+        });
+
+        // Close menu when link is clicked
+        navLinksMenu.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                navLinksMenu.classList.remove("active");
+                const icon = menuToggle.querySelector("i");
+                if (icon) {
+                    icon.classList.add("fa-bars");
+                    icon.classList.remove("fa-times");
+                }
+            });
+        });
+    }
+
+    // ==========================================================================
+    // 3. Dynamic Typing Animation
+    // ==========================================================================
+    const roles = [
+        "AI & ML Engineer",
+        "Web Developer",
+        "Tech Innovator",
+        "Public Relations Officer",
+        "Problem Solver"
+    ];
+
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingElement = document.getElementById("typing");
+
+    function typeEffect() {
+        if (!typingElement) return;
+
+        const currentRole = roles[roleIndex];
+
+        if (isDeleting) {
+            typingElement.textContent = currentRole.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            typingElement.textContent = currentRole.substring(0, charIndex + 1);
+            charIndex++;
+        }
+
+        let speed = isDeleting ? 40 : 80;
+
+        if (!isDeleting && charIndex === currentRole.length) {
+            speed = 1800; // Pause at full word
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            speed = 400; // Pause before typing next
+        }
+
+        setTimeout(typeEffect, speed);
+    }
+
+    typeEffect();
+
+    // ==========================================================================
+    // 4. Counter Up Animation (Trigger on Viewport Entry)
+    // ==========================================================================
+    const counters = document.querySelectorAll(".counter");
+    let animatedCounters = false;
+
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const target = +counter.getAttribute("data-target");
+            const duration = 1500;
+            const startTime = performance.now();
+
+            const updateCount = (currentTime) => {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                const currentCount = Math.floor(progress * target);
+
+                counter.innerText = currentCount + "+";
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateCount);
+                } else {
+                    counter.innerText = target + "+";
+                }
+            };
+
+            requestAnimationFrame(updateCount);
+        });
     };
 
-    updateCounter();
+    const statsSection = document.querySelector(".stats-section");
 
-});
+    if (statsSection && counters.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animatedCounters) {
+                    animateCounters();
+                    animatedCounters = true;
+                }
+            });
+        }, { threshold: 0.5 });
 
+        observer.observe(statsSection);
+    }
 
-// ===============================
-// Particles Background
-// ===============================
+    // ==========================================================================
+    // 5. Skill Progress Bars Animation
+    // ==========================================================================
+    const skillProgressBars = document.querySelectorAll(".skill-progress");
 
-if (typeof particlesJS !== "undefined") {
+    if (skillProgressBars.length > 0) {
+        const skillsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const progress = entry.target.getAttribute("data-progress");
+                    if (progress) {
+                        entry.target.style.width = progress;
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
 
-    particlesJS("particles-js", {
+        skillProgressBars.forEach(bar => skillsObserver.observe(bar));
+    }
 
-        particles: {
+    // ==========================================================================
+    // 6. Project Category Filtering
+    // ==========================================================================
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const projectCards = document.querySelectorAll(".project-card");
 
-            number: {
-                value: 80
-            },
+    filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
 
-            color: {
-                value: "#00e5ff"
-            },
+            const filterValue = button.getAttribute("data-filter");
 
-            shape: {
-                type: "circle"
-            },
+            projectCards.forEach(card => {
+                const category = card.getAttribute("data-category");
 
-            opacity: {
-                value: 0.5
-            },
+                if (filterValue === "all" || category === filterValue) {
+                    card.style.display = "flex";
+                    setTimeout(() => {
+                        card.style.opacity = "1";
+                        card.style.transform = "scale(1)";
+                    }, 50);
+                } else {
+                    card.style.opacity = "0";
+                    card.style.transform = "scale(0.9)";
+                    setTimeout(() => {
+                        card.style.display = "none";
+                    }, 300);
+                }
+            });
+        });
+    });
 
-            size: {
-                value: 3
-            },
+    // ==========================================================================
+    // 7. Dark / Light Theme Toggle with LocalStorage Memory
+    // ==========================================================================
+    const themeBtn = document.getElementById("theme-toggle");
 
-            move: {
-                enable: true,
-                speed: 2
+    const setTheme = (isLight) => {
+        if (isLight) {
+            document.body.classList.add("light-theme");
+            if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            localStorage.setItem("themePreference", "light");
+        } else {
+            document.body.classList.remove("light-theme");
+            if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            localStorage.setItem("themePreference", "dark");
+        }
+    };
+
+    const savedTheme = localStorage.getItem("themePreference");
+    if (savedTheme === "light") {
+        setTheme(true);
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+            const isCurrentlyLight = document.body.classList.contains("light-theme");
+            setTheme(!isCurrentlyLight);
+        });
+    }
+
+    // ==========================================================================
+    // 8. Contact Form Handler (EmailJS + FormSubmit + Mailto Fallback)
+    // ==========================================================================
+    const contactForm = document.getElementById("contact-form");
+
+    if (contactForm) {
+        contactForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const nameVal = document.getElementById("name")?.value.trim() || "";
+            const emailVal = document.getElementById("email")?.value.trim() || "";
+            const messageVal = document.getElementById("message")?.value.trim() || "";
+
+            if (!nameVal || !emailVal || !messageVal) {
+                alert("Please fill out all fields.");
+                return;
             }
 
-        }
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : "";
 
-    });
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            }
 
-}
+            const templateParams = {
+                name: nameVal,
+                from_name: nameVal,
+                user_name: nameVal,
+                email: emailVal,
+                from_email: emailVal,
+                user_email: emailVal,
+                reply_to: emailVal,
+                message: messageVal,
+                to_name: "Hari Vasan"
+            };
 
+            let sentSuccessfully = false;
 
-// ===============================
-// Dark Mode Toggle
-// ===============================
+            // Attempt 1: EmailJS
+            if (typeof emailjs !== "undefined") {
+                try {
+                    // Try EmailJS send with explicit public key 4th param for compatibility
+                    await emailjs.send("service_b9krrna", "template_7tyksk8", templateParams, "60vg5CdeRJjgUJNRv");
+                    sentSuccessfully = true;
+                } catch (err) {
+                    console.warn("EmailJS attempt failed, trying backup endpoint...", err);
+                }
+            }
 
-const themeBtn =
-    document.getElementById("theme-toggle");
+            // Attempt 2: FormSubmit AJAX Fallback (No registration required, sends directly to harivasan068@gmail.com)
+            if (!sentSuccessfully) {
+                try {
+                    const response = await fetch("https://formsubmit.co/ajax/harivasan068@gmail.com", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: nameVal,
+                            email: emailVal,
+                            message: messageVal,
+                            _subject: `New Portfolio Message from ${nameVal}`
+                        })
+                    });
 
-if (themeBtn) {
+                    if (response.ok) {
+                        sentSuccessfully = true;
+                    }
+                } catch (err) {
+                    console.warn("FormSubmit endpoint failed:", err);
+                }
+            }
 
-    themeBtn.onclick = () => {
+            // Outcome handling
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            }
 
-        document.body.classList.toggle("light");
-
-        if (document.body.classList.contains("light")) {
-
-            themeBtn.innerHTML = "☀️";
-
-        } else {
-
-            themeBtn.innerHTML = "🌙";
-
-        }
-
-    };
-
-}
-
-
-// ===============================
-// Mobile Menu
-// ===============================
-
-const menuToggle =
-    document.querySelector(".menu-toggle");
-
-const navLinks =
-    document.querySelector(".nav-links");
-
-if (menuToggle && navLinks) {
-
-    menuToggle.addEventListener("click", () => {
-
-        navLinks.classList.toggle("active");
-
-    });
-
-}
-
-
-// ===============================
-// Page Load
-// ===============================
-
-window.addEventListener("load", () => {
-
-    // Start Typing Animation
-    typeText();
-
-    // Hide Loader (if exists)
-    const loader =
-        document.getElementById("loader");
-
-    if (loader) {
-
-        loader.style.display = "none";
-
+            if (sentSuccessfully) {
+                alert("🚀 Message sent successfully! Please check your Gmail Inbox & Spam folder (harivasan068@gmail.com). Note: If using FormSubmit for the first time, check for an activation email titled 'Action Required: Confirm your email address' to activate automatic forwarding.");
+                contactForm.reset();
+            } else {
+                // Attempt 3: Direct mailto fallback if network or API keys block file:// protocol
+                const mailtoUrl = `mailto:harivasan068@gmail.com?subject=${encodeURIComponent("Portfolio Message from " + nameVal)}&body=${encodeURIComponent("Name: " + nameVal + "\nEmail: " + emailVal + "\n\nMessage:\n" + messageVal)}`;
+                window.location.href = mailtoUrl;
+                alert("Opening your email client to send your message directly to harivasan068@gmail.com...");
+                contactForm.reset();
+            }
+        });
     }
 
+    // ==========================================================================
+    // 9. Particles Background Configuration
+    // ==========================================================================
+    if (typeof particlesJS !== "undefined") {
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: "#00f2fe" },
+                shape: { type: "circle" },
+                opacity: { value: 0.4, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 140,
+                    color: "#00f2fe",
+                    opacity: 0.25,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.8,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 160, line_linked: { opacity: 0.6 } },
+                    push: { particles_nb: 3 }
+                }
+            },
+            retina_detect: true
+        });
+    }
 });
-
-// ===============================
-// Contact Form - EmailJS
-// ===============================
-
-emailjs.init("60vg5CdeRJjgUJNRv");
-
-const contactForm = document.getElementById("contact-form");
-
-if(contactForm){
-
-contactForm.addEventListener("submit", function(e){
-
-e.preventDefault();
-
-emailjs.send(
-"service_b9krrna",
-"template_7tyksk8",
-{
-name: document.getElementById("name").value,
-email: document.getElementById("email").value,
-message: document.getElementById("message").value
-}
-)
-
-.then(function(){
-
-alert("✅ Message Sent Successfully!");
-
-contactForm.reset();
-
-})
-
-.catch(function(error){
-
-alert("❌ Failed to Send Message");
-
-console.log("EmailJS Error:", error);
-
-});
-
-});
-
-}
