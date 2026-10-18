@@ -640,4 +640,286 @@ document.addEventListener("DOMContentLoaded", () => {
             closeModal();
         }
     });
+
+    // ==========================================================================
+    // Academic Presentation Achievement Showcase & Interactive Modals
+    // ==========================================================================
+    
+    // 1. Showcase Tab Viewport Switcher
+    const showcaseTabs = document.querySelectorAll(".showcase-tab");
+    const spotlightSingle = document.getElementById("spotlight-single");
+    const spotlightDual = document.getElementById("spotlight-dual");
+    const spotlightMainImg = document.getElementById("spotlight-main-img");
+    const spotlightCaptionTag = document.getElementById("spotlight-caption-tag");
+    const spotlightCaptionTitle = document.getElementById("spotlight-caption-title");
+
+    const mediaData = {
+        presentation: {
+            img: "images/icgetei-presentation.jpg",
+            alt: "Harivasan V presenting research at ICGETEI 2026 conference",
+            tag: "ICGETEI 2026 Live Session",
+            title: "Oral Presentation on Energy-Aware Routing in Acoustic Networks"
+        },
+        certificate: {
+            img: "images/icgetei-certificate.jpg",
+            alt: "Certificate of Participation ICGETEI 2026 - Harivasan V",
+            tag: "Official Credential",
+            title: "Certificate of Participation & Research Presentation"
+        }
+    };
+
+    let currentShowcaseView = "presentation";
+
+    const updateShowcaseView = (viewMode) => {
+        currentShowcaseView = viewMode;
+
+        showcaseTabs.forEach(tab => {
+            const isMatch = tab.getAttribute("data-view") === viewMode;
+            tab.classList.toggle("active", isMatch);
+            tab.setAttribute("aria-selected", isMatch ? "true" : "false");
+        });
+
+        if (viewMode === "dual") {
+            spotlightSingle?.classList.remove("active");
+            spotlightDual?.classList.add("active");
+        } else {
+            spotlightDual?.classList.remove("active");
+            spotlightSingle?.classList.add("active");
+
+            if (mediaData[viewMode] && spotlightMainImg) {
+                spotlightMainImg.style.opacity = "0.4";
+                setTimeout(() => {
+                    spotlightMainImg.src = mediaData[viewMode].img;
+                    spotlightMainImg.alt = mediaData[viewMode].alt;
+                    if (spotlightCaptionTag) spotlightCaptionTag.textContent = mediaData[viewMode].tag;
+                    if (spotlightCaptionTitle) spotlightCaptionTitle.textContent = mediaData[viewMode].title;
+                    spotlightMainImg.style.opacity = "1";
+                }, 150);
+            }
+        }
+    };
+
+    showcaseTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const viewMode = tab.getAttribute("data-view");
+            if (viewMode) updateShowcaseView(viewMode);
+        });
+    });
+
+    // Dual view card clicks
+    document.querySelectorAll(".dual-item").forEach(item => {
+        item.addEventListener("click", () => {
+            const target = item.getAttribute("data-show-target");
+            if (target) {
+                openCertModal(target);
+            }
+        });
+    });
+
+    // 2. Interactive 3D Card Tilt & Ambient Specular Glow
+    const academicCard = document.getElementById("academic-card");
+    const academicGlow = document.querySelector(".academic-card-glow");
+
+    if (academicCard) {
+        academicCard.addEventListener("mousemove", (e) => {
+            const rect = academicCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((y - centerY) / centerY) * -3;
+            const rotateY = ((x - centerX) / centerX) * 4;
+
+            academicCard.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+
+            if (academicGlow) {
+                const glowX = (x / rect.width) * 100;
+                const glowY = (y / rect.height) * 100;
+                academicGlow.style.background = `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(0, 242, 254, 0.16), transparent 50%), radial-gradient(circle at 75% 70%, rgba(0, 223, 196, 0.08), transparent 45%)`;
+            }
+        });
+
+        academicCard.addEventListener("mouseleave", () => {
+            academicCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
+            if (academicGlow) {
+                academicGlow.style.background = `radial-gradient(circle at 25% 30%, rgba(0, 242, 254, 0.12), transparent 45%), radial-gradient(circle at 75% 70%, rgba(0, 223, 196, 0.08), transparent 45%)`;
+            }
+        });
+    }
+
+    // 3. Interactive Focus Area Pill-Tags
+    const techPills = document.querySelectorAll(".tech-pill");
+    const insightContent = document.getElementById("insight-content");
+    const tagInsightCard = document.getElementById("tag-insight-card");
+
+    const tagInsights = {
+        uan: "<strong>Underwater Acoustic Networks:</strong> Overcoming extreme acoustic propagation delay (~1500 m/s), low bandwidth, and harsh multi-path transmission conditions through intelligent node discovery.",
+        energy: "<strong>Energy Efficiency:</strong> Dynamic residual battery weighting prevents early node death and balances workload across deep-sea clusters, saving over 28% total network energy.",
+        cluster: "<strong>Cluster-Based Routing:</strong> Multi-hop inter-cluster forwarding with adaptive cluster-head rotation prevents hot-spot depletion near surface sinks.",
+        iot: "<strong>IoT:</strong> Seamless acoustic-to-RF gateway communication for real-time telemetry from Autonomous Underwater Vehicles (AUVs) and sea-floor sensor nodes.",
+        protocol: "<strong>Protocol Design:</strong> Cross-layer MAC & network optimization with synchronized sleep duty-cycles reducing collision overhead and packet drop rates."
+    };
+
+    techPills.forEach(pill => {
+        pill.addEventListener("click", () => {
+            const tagKey = pill.getAttribute("data-tag");
+            if (!tagKey || !tagInsights[tagKey]) return;
+
+            techPills.forEach(p => p.classList.remove("active"));
+            pill.classList.add("active");
+
+            if (insightContent && tagInsightCard) {
+                tagInsightCard.style.opacity = "0.5";
+                tagInsightCard.style.transform = "translateY(2px)";
+                setTimeout(() => {
+                    insightContent.innerHTML = tagInsights[tagKey];
+                    tagInsightCard.style.opacity = "1";
+                    tagInsightCard.style.transform = "translateY(0)";
+                }, 150);
+            }
+        });
+    });
+
+    // 4. Interactive Certificate & Media Viewer Modal
+    const certModalViewer = document.getElementById("cert-modal-viewer");
+    const certModalClose = document.getElementById("cert-modal-close");
+    const certStageImg = document.getElementById("cert-stage-img");
+    const certModalHeading = document.getElementById("cert-modal-heading");
+    const modalTabCert = document.getElementById("modal-tab-cert");
+    const modalTabPres = document.getElementById("modal-tab-pres");
+    const zoomInBtn = document.getElementById("zoom-in-btn");
+    const zoomOutBtn = document.getElementById("zoom-out-btn");
+    const zoomResetBtn = document.getElementById("zoom-reset-btn");
+
+    let currentZoom = 1;
+
+    const setCertModalMedia = (type) => {
+        currentZoom = 1;
+        if (certStageImg) certStageImg.style.transform = `scale(${currentZoom})`;
+
+        if (type === "presentation") {
+            if (certStageImg) {
+                certStageImg.src = "images/icgetei-presentation.jpg";
+                certStageImg.alt = "ICGETEI 2026 Presentation Photo - Harivasan V";
+            }
+            if (certModalHeading) certModalHeading.textContent = "Presentation Session — ICGETEI 2026";
+            modalTabPres?.classList.add("active");
+            modalTabCert?.classList.remove("active");
+        } else {
+            if (certStageImg) {
+                certStageImg.src = "images/icgetei-certificate.jpg";
+                certStageImg.alt = "Certificate of Participation ICGETEI 2026 - Harivasan V";
+            }
+            if (certModalHeading) certModalHeading.textContent = "Certificate of Participation — ICGETEI 2026";
+            modalTabCert?.classList.add("active");
+            modalTabPres?.classList.remove("active");
+        }
+    };
+
+    const openCertModal = (mediaType = "certificate") => {
+        setCertModalMedia(mediaType);
+        certModalViewer?.classList.add("active");
+        certModalViewer?.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeCertModal = () => {
+        certModalViewer?.classList.remove("active");
+        certModalViewer?.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "auto";
+        currentZoom = 1;
+        if (certStageImg) certStageImg.style.transform = `scale(1)`;
+    };
+
+    modalTabCert?.addEventListener("click", () => setCertModalMedia("certificate"));
+    modalTabPres?.addEventListener("click", () => setCertModalMedia("presentation"));
+
+    // Zoom handlers
+    zoomInBtn?.addEventListener("click", () => {
+        if (currentZoom < 2.5) {
+            currentZoom += 0.25;
+            if (certStageImg) certStageImg.style.transform = `scale(${currentZoom})`;
+        }
+    });
+
+    zoomOutBtn?.addEventListener("click", () => {
+        if (currentZoom > 0.6) {
+            currentZoom -= 0.25;
+            if (certStageImg) certStageImg.style.transform = `scale(${currentZoom})`;
+        }
+    });
+
+    zoomResetBtn?.addEventListener("click", () => {
+        currentZoom = 1;
+        if (certStageImg) certStageImg.style.transform = `scale(1)`;
+    });
+
+    // Triggers for certificate modal
+    document.getElementById("btn-view-cert")?.addEventListener("click", () => openCertModal("certificate"));
+    document.getElementById("showcase-expand-top-btn")?.addEventListener("click", () => {
+        openCertModal(currentShowcaseView === "certificate" ? "certificate" : "presentation");
+    });
+    document.getElementById("spotlight-single")?.addEventListener("click", () => {
+        openCertModal(currentShowcaseView === "certificate" ? "certificate" : "presentation");
+    });
+
+    if (certModalClose) certModalClose.addEventListener("click", closeCertModal);
+    if (certModalViewer) {
+        certModalViewer.addEventListener("click", (e) => {
+            if (e.target === certModalViewer) closeCertModal();
+        });
+    }
+
+    // 5. Interactive Paper Abstract Modal
+    const abstractModalViewer = document.getElementById("abstract-modal-viewer");
+    const abstractModalClose = document.getElementById("abstract-modal-close");
+    const btnReadAbstract = document.getElementById("btn-read-abstract");
+    const copyCitationBtn = document.getElementById("copy-citation-btn");
+    const bibtexCitation = document.getElementById("bibtex-citation");
+
+    const openAbstractModal = () => {
+        abstractModalViewer?.classList.add("active");
+        abstractModalViewer?.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeAbstractModal = () => {
+        abstractModalViewer?.classList.remove("active");
+        abstractModalViewer?.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "auto";
+    };
+
+    btnReadAbstract?.addEventListener("click", openAbstractModal);
+    if (abstractModalClose) abstractModalClose.addEventListener("click", closeAbstractModal);
+    if (abstractModalViewer) {
+        abstractModalViewer.addEventListener("click", (e) => {
+            if (e.target === abstractModalViewer) closeAbstractModal();
+        });
+    }
+
+    // Copy BibTeX button
+    copyCitationBtn?.addEventListener("click", () => {
+        if (bibtexCitation) {
+            navigator.clipboard.writeText(bibtexCitation.textContent).then(() => {
+                const originalHtml = copyCitationBtn.innerHTML;
+                copyCitationBtn.innerHTML = `<i class="fas fa-check" style="color: #10b981;"></i> <span>Copied!</span>`;
+                copyCitationBtn.style.borderColor = "#10b981";
+                setTimeout(() => {
+                    copyCitationBtn.innerHTML = originalHtml;
+                    copyCitationBtn.style.borderColor = "";
+                }, 2200);
+            }).catch(err => {
+                console.error("Clipboard copy failed:", err);
+            });
+        }
+    });
+
+    // Global ESC key listener for newly added modals
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            if (certModalViewer?.classList.contains("active")) closeCertModal();
+            if (abstractModalViewer?.classList.contains("active")) closeAbstractModal();
+        }
+    });
 });
