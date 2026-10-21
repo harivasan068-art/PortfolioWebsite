@@ -6,13 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize AOS Animate On Scroll Library
     if (typeof AOS !== "undefined") {
         AOS.init({
-            duration: 900,
+            duration: 700,
             once: true,
-            offset: 80
+            offset: 60
         });
     }
 
-    // Initialize EmailJS
+    // Initialize EmailJS if present
     if (typeof emailjs !== "undefined") {
         try {
             emailjs.init({ publicKey: "60vg5CdeRJjgUJNRv" });
@@ -29,13 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const navLinks = document.querySelectorAll(".nav-links a");
 
     window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
+        if (window.scrollY > 40) {
             navbar?.classList.add("scrolled");
         } else {
             navbar?.classList.remove("scrolled");
         }
 
-        if (window.scrollY > 400) {
+        if (window.scrollY > 350) {
             scrollTopBtn?.classList.add("visible");
         } else {
             scrollTopBtn?.classList.remove("visible");
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Close menu when link is clicked
+        // Close menu when a link is clicked
         navLinksMenu.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", () => {
                 navLinksMenu.classList.remove("active");
@@ -101,150 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================================================
-    // 3. Dynamic Typing Animation
-    // ==========================================================================
-    const roles = [
-        "AI & ML Engineer",
-        "Web Developer",
-        "Tech Innovator",
-        "Public Relations Officer",
-        "Problem Solver"
-    ];
-
-    let roleIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    const typingElement = document.getElementById("typing");
-
-    function typeEffect() {
-        if (!typingElement) return;
-
-        const currentRole = roles[roleIndex];
-
-        if (isDeleting) {
-            typingElement.textContent = currentRole.substring(0, charIndex - 1);
-            charIndex--;
-        } else {
-            typingElement.textContent = currentRole.substring(0, charIndex + 1);
-            charIndex++;
-        }
-
-        let speed = isDeleting ? 40 : 80;
-
-        if (!isDeleting && charIndex === currentRole.length) {
-            speed = 1800; // Pause at full word
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            roleIndex = (roleIndex + 1) % roles.length;
-            speed = 400; // Pause before typing next
-        }
-
-        setTimeout(typeEffect, speed);
-    }
-
-    typeEffect();
-
-    // ==========================================================================
-    // 4. Counter Up Animation (Trigger on Viewport Entry)
-    // ==========================================================================
-    const counters = document.querySelectorAll(".counter");
-    let animatedCounters = false;
-
-    const animateCounters = () => {
-        counters.forEach(counter => {
-            const target = +counter.getAttribute("data-target");
-            const duration = 1500;
-            const startTime = performance.now();
-
-            const updateCount = (currentTime) => {
-                const elapsedTime = currentTime - startTime;
-                const progress = Math.min(elapsedTime / duration, 1);
-                const currentCount = Math.floor(progress * target);
-
-                counter.innerText = currentCount + "+";
-
-                if (progress < 1) {
-                    requestAnimationFrame(updateCount);
-                } else {
-                    counter.innerText = target + "+";
-                }
-            };
-
-            requestAnimationFrame(updateCount);
-        });
-    };
-
-    const statsSection = document.querySelector(".stats-section");
-
-    if (statsSection && counters.length > 0) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !animatedCounters) {
-                    animateCounters();
-                    animatedCounters = true;
-                }
-            });
-        }, { threshold: 0.5 });
-
-        observer.observe(statsSection);
-    }
-
-    // ==========================================================================
-    // 5. Skill Progress Bars Animation
-    // ==========================================================================
-    const skillProgressBars = document.querySelectorAll(".skill-progress");
-
-    if (skillProgressBars.length > 0) {
-        const skillsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const progress = entry.target.getAttribute("data-progress");
-                    if (progress) {
-                        entry.target.style.width = progress;
-                    }
-                }
-            });
-        }, { threshold: 0.3 });
-
-        skillProgressBars.forEach(bar => skillsObserver.observe(bar));
-    }
-
-    // ==========================================================================
-    // 6. Project Category Filtering
-    // ==========================================================================
-    const filterButtons = document.querySelectorAll(".filter-btn");
-    const projectCards = document.querySelectorAll(".project-card");
-
-    filterButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            filterButtons.forEach(btn => btn.classList.remove("active"));
-            button.classList.add("active");
-
-            const filterValue = button.getAttribute("data-filter");
-
-            projectCards.forEach(card => {
-                const category = card.getAttribute("data-category");
-
-                if (filterValue === "all" || category === filterValue) {
-                    card.style.display = "flex";
-                    setTimeout(() => {
-                        card.style.opacity = "1";
-                        card.style.transform = "scale(1)";
-                    }, 50);
-                } else {
-                    card.style.opacity = "0";
-                    card.style.transform = "scale(0.9)";
-                    setTimeout(() => {
-                        card.style.display = "none";
-                    }, 300);
-                }
-            });
-        });
-    });
-
-    // ==========================================================================
-    // 7. Dark / Light Theme Toggle with LocalStorage Memory
+    // 3. Dark / Light Theme Toggle with LocalStorage Memory
     // ==========================================================================
     const themeBtn = document.getElementById("theme-toggle");
 
@@ -273,7 +130,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================================================
-    // 8. Contact Form Handler (Direct Gmail Web App + FormSubmit + EmailJS)
+    // 4. Project Category Filtering
+    // ==========================================================================
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const projectCards = document.querySelectorAll(".project-card");
+
+    filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+
+            const filterValue = button.getAttribute("data-filter");
+
+            projectCards.forEach(card => {
+                const category = card.getAttribute("data-category");
+
+                if (filterValue === "all" || category === filterValue) {
+                    card.style.display = "flex";
+                    setTimeout(() => {
+                        card.style.opacity = "1";
+                        card.style.transform = "scale(1)";
+                    }, 30);
+                } else {
+                    card.style.opacity = "0";
+                    card.style.transform = "scale(0.96)";
+                    setTimeout(() => {
+                        card.style.display = "none";
+                    }, 200);
+                }
+            });
+        });
+    });
+
+    // ==========================================================================
+    // 5. Contact Form Handler (Direct Gmail Web App + FormSubmit)
     // ==========================================================================
     const contactForm = document.getElementById("contact-form");
     const nameInput = document.getElementById("name");
@@ -287,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const emailVal = emailInput?.value.trim() || "";
         const messageVal = messageInput?.value.trim() || "";
 
-        const subject = nameVal ? `Portfolio Message from ${nameVal}` : "Portfolio Inquiry";
+        const subject = nameVal ? `Inquiry from ${nameVal}` : "Software Engineering Inquiry";
         const body = `Hi Hari,\n\n${messageVal}\n\nFrom:\nName: ${nameVal}\nEmail: ${emailVal}`;
 
         gmailComposeBtn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -306,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const messageVal = messageInput?.value.trim() || "";
 
             if (!nameVal || !emailVal || !messageVal) {
-                alert("Please fill out all fields.");
+                alert("Please fill out all required fields.");
                 return;
             }
 
@@ -315,12 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             }
 
-            let sentSuccessfully = false;
+            let sent = false;
 
-            // Attempt 1: Direct FormSubmit endpoint
             try {
                 const response = await fetch("https://formsubmit.co/ajax/harivasan068@gmail.com", {
                     method: "POST",
@@ -332,31 +221,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         name: nameVal,
                         email: emailVal,
                         message: messageVal,
-                        _subject: `New Portfolio Message from ${nameVal}`
+                        _subject: `Portfolio Message from ${nameVal}`
                     })
                 });
 
                 if (response.ok) {
-                    sentSuccessfully = true;
+                    sent = true;
                 }
             } catch (err) {
-                console.warn("FormSubmit endpoint failed:", err);
-            }
-
-            // Attempt 2: EmailJS
-            if (!sentSuccessfully && typeof emailjs !== "undefined") {
-                try {
-                    await emailjs.send("service_b9krrna", "template_7tyksk8", {
-                        name: nameVal,
-                        email: emailVal,
-                        message: messageVal,
-                        reply_to: emailVal,
-                        to_name: "Hari Vasan"
-                    }, "60vg5CdeRJjgUJNRv");
-                    sentSuccessfully = true;
-                } catch (err) {
-                    console.warn("EmailJS attempt failed:", err);
-                }
+                console.warn("FormSubmit fetch error:", err);
             }
 
             if (submitBtn) {
@@ -364,142 +237,69 @@ document.addEventListener("DOMContentLoaded", () => {
                 submitBtn.innerHTML = originalBtnHtml;
             }
 
-            // Always open Gmail Compose tab with pre-filled details as a 100% guarantee
+            // Also open Gmail compose as a direct, reliable bridge
             const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=${encodeURIComponent("Portfolio Message from " + nameVal)}&body=${encodeURIComponent("Hi Hari,\n\n" + messageVal + "\n\nFrom:\nName: " + nameVal + "\nEmail: " + emailVal)}`;
             window.open(gmailUrl, "_blank");
 
-            alert("Opening Gmail compose window to send your message directly to harivasan068@gmail.com! Simply click Send in Gmail.");
+            alert("Thank you! Opening your Gmail compose window to send directly to harivasan068@gmail.com.");
             contactForm.reset();
         });
     }
 
     // ==========================================================================
-    // 9. Particles Background Configuration
-    // ==========================================================================
-    if (typeof particlesJS !== "undefined") {
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 60, density: { enable: true, value_area: 800 } },
-                color: { value: "#00f2fe" },
-                shape: { type: "circle" },
-                opacity: { value: 0.4, random: true },
-                size: { value: 3, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 140,
-                    color: "#00f2fe",
-                    opacity: 0.25,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1.8,
-                    direction: "none",
-                    random: false,
-                    straight: false,
-                    out_mode: "out",
-                    bounce: false
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "grab" },
-                    onclick: { enable: true, mode: "push" },
-                    resize: true
-                },
-                modes: {
-                    grab: { distance: 160, line_linked: { opacity: 0.6 } },
-                    push: { particles_nb: 3 }
-                }
-            },
-            retina_detect: true
-        });
-    }
-
-    // ==========================================================================
-    // 10. Accent Theme Color Selector Logic
-    // ==========================================================================
-    const accentDots = document.querySelectorAll(".accent-dot");
-    
-    const setAccentColor = (accentName) => {
-        document.body.setAttribute("data-accent", accentName);
-        accentDots.forEach(dot => {
-            if (dot.getAttribute("data-accent") === accentName) {
-                dot.classList.add("active");
-            } else {
-                dot.classList.remove("active");
-            }
-        });
-        localStorage.setItem("accentColorPreference", accentName);
-    };
-
-    const savedAccent = localStorage.getItem("accentColorPreference");
-    if (savedAccent) {
-        setAccentColor(savedAccent);
-    }
-
-    accentDots.forEach(dot => {
-        dot.addEventListener("click", () => {
-            const accent = dot.getAttribute("data-accent");
-            if (accent) setAccentColor(accent);
-        });
-    });
-
-    // ==========================================================================
-    // 11. Interactive Project Detail Modals Dataset & Handler
+    // 6. Interactive Project Detail Modals Dataset & Handler
     // ==========================================================================
     const projectsData = {
         hafa: {
-            title: "HafA DIGITAL — Field & Production Operations Platform",
-            badge: "Full-Stack Operations Platform",
+            title: "HafA DIGITAL — Agency Operations Platform",
+            badge: "Full-Stack Production System",
             role: "Role: Full-Stack Lead Developer",
             image: "images/hafa.png",
-            desc: "A real-time operations management platform designed for a digital marketing agency to streamline on-field shoot coordination, post-production pipelines, and staff attendance.",
+            desc: "A production-grade operations management web application built for a digital marketing agency to streamline shoot logistics, editor assignments, client deliverables, and employee check-in verification.",
             features: [
-                "Automated Field Attendance: Integrated GPS Geofence and Haversine distance verification alongside live WebRTC selfie photo capture for ground dispatches.",
-                "End-to-End Production Ledger: Interactive task ledger tracking multi-stage deliverables (Shop, Model, Cameraman, Editor, Delivery status) with dynamic KPI analytics.",
-                "Bi-directional Cloud Sync: Custom webhook integrations via Google Apps Script to synchronize attendance and shoot logs directly into structured cloud spreadsheets.",
-                "Role-Based Access Control (RBAC): Admin Dashboard vs. Field Employee views with secure credential & profile management."
+                "Automated Field Attendance: Haversine-based GPS geofence radius check combined with live WebRTC selfie capture for real-time employee attendance verification.",
+                "Production Deliverables Ledger: Multi-stage tracking (Shop, Model, Cameraman, Editor, Review, Delivery) with filterable status views and operational KPIs.",
+                "Bi-directional Cloud Sync: Custom Google Apps Script webhooks syncing on-field reports directly into central cloud spreadsheets.",
+                "Role-Based Access: Dedicated views for agency leadership and field operational crew."
             ],
             tags: ["React", "Tailwind CSS", "Firebase Auth", "Firestore", "Google Apps Script", "Geolocation API", "Vercel"],
             links: [
-                { text: "Live Demo (hafadigital.in)", url: "https://hafadigital.in", isPrimary: true, icon: "fas fa-external-link-alt" }
+                { text: "Live Site (hafadigital.in)", url: "https://hafadigital.in", isPrimary: true, icon: "fas fa-external-link-alt" }
             ]
         },
         event: {
-            title: "Event Registration & Attendance System",
+            title: "Event Registration & QR Verification System",
             badge: "Web Application",
             role: "Role: Full-Stack Developer",
             image: "images/event.png",
-            desc: "Comprehensive web platform engineered with Flask and SQLite to automate college event registrations, admin attendance tracking, and ticket verification.",
+            desc: "Comprehensive web platform engineered with Flask and SQLite to handle college symposium registrations, automated QR-code badge delivery, and single-click scanner verification at event gates.",
             features: [
-                "Real-time QR Code Ticket Generation for instant check-in verification at event entry.",
-                "Google OAuth 2.0 Integration for secure single sign-on student authentication.",
-                "Admin Control Dashboard with real-time participant analytics and CSV report generation.",
-                "Hosted live on Render cloud platform with automated deployment pipelines."
+                "Dynamic QR Code Generation: Generates unique encrypted QR verification tokens per registrant sent via email for instant check-in verification.",
+                "Google OAuth 2.0 Integration: Secure student sign-on preventing duplicate entries.",
+                "Administrative Dashboard: Real-time attendance counting, seat capacity monitoring, and CSV attendance export.",
+                "Cloud Deployment: Containerized and hosted live on Render platform with persistent database storage."
             ],
-            tags: ["Flask", "Python", "SQLite", "Google OAuth", "QR Code", "Render"],
+            tags: ["Flask", "Python", "SQLite", "Google OAuth 2.0", "QR Code", "Render"],
             links: [
                 { text: "Live Demo", url: "https://eventregistrationwebsite.onrender.com", isPrimary: true, icon: "fas fa-external-link-alt" },
                 { text: "GitHub Source", url: "https://github.com/harivasan068-art/EventRegistrationWebsite", isPrimary: false, icon: "fab fa-github" }
             ]
         },
         movie: {
-            title: "AI Movie Recommendation Engine",
-            badge: "AI & Machine Learning",
+            title: "Content-Based Movie Recommendation Engine",
+            badge: "Machine Learning",
             role: "Role: Machine Learning Engineer",
             image: "images/movie.png",
-            desc: "Intelligent content-based recommendation model built with Python and Scikit-Learn to suggest relevant films based on user preference vectors and metadata similarity.",
+            desc: "Machine learning model built with Python and Scikit-Learn to compute high-accuracy similarity metrics across multidimensional film metadata vectors.",
             features: [
-                "Cosine Similarity Algorithm analyzing genre combinations, cast vectors, keywords, and director metadata.",
-                "Feature Extraction & Data Preprocessing pipeline powered by Pandas and NumPy.",
-                "Scalable model deployment ready for web frontend integration.",
-                "Evaluated accuracy against TMDB 5000 movie dataset metrics."
+                "Cosine Similarity Algorithm: Calculates distance metrics across multi-attribute text vectors (genres, cast, keywords, directors).",
+                "Text Preprocessing Pipeline: Stopword removal, stemming, and vectorization using Scikit-Learn CountVectorizer.",
+                "Dataset Evaluation: Benchmarked against the TMDB 5000 movie dataset for recommendation relevancy.",
+                "Modular Architecture: Clean Python codebase ready for web API integration."
             ],
-            tags: ["Python", "Scikit-Learn", "Machine Learning", "Pandas", "NumPy"],
+            tags: ["Python", "Scikit-Learn", "Pandas", "NumPy", "Cosine Similarity"],
             links: [
-                { text: "View Repository", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
+                { text: "GitHub Repository", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
             ]
         },
         happiness: {
@@ -507,64 +307,47 @@ document.addEventListener("DOMContentLoaded", () => {
             badge: "Data Science",
             role: "Role: Data Analyst",
             image: "images/happiness.png",
-            desc: "Data analytics project investigating global happiness factors, GDP per capita, social support, and life expectancy across 150+ nations.",
+            desc: "Exploratory data analysis and statistical study evaluating global well-being factors, GDP per capita, healthy life expectancy, and social trust across 150+ countries.",
             features: [
-                "Exploratory Data Analysis (EDA) uncovering regional trends and key predictors of well-being.",
-                "Interactive Heatmap Visualizations built using Matplotlib and Seaborn.",
-                "Regression Analysis evaluating impact of economic vs. social variables on national happiness ranks."
+                "Exploratory Data Analysis (EDA): Uncovering regional trends and strongest predictors of population life satisfaction.",
+                "Correlation Heatmaps & Visualizations: Built using Matplotlib and Seaborn for clear graphical communication.",
+                "Multivariate Regression: Comparing relative impact of economic indicators versus societal safety nets."
             ],
             tags: ["Python", "Pandas", "Matplotlib", "Seaborn", "Data Science"],
             links: [
-                { text: "View Repository", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
+                { text: "GitHub Repository", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
             ]
         },
         hotel: {
-            title: "Hotel Management Desktop System",
-            badge: "Java & Systems",
+            title: "Hotel Operations Management Desktop System",
+            badge: "Java OOP Application",
             role: "Role: Systems Developer",
             image: "images/hotel.png",
-            desc: "Desktop management application built with Object-Oriented Java to handle hotel room reservations, guest check-ins/check-outs, and billing invoices.",
+            desc: "Desktop operations platform built with Object-Oriented Java to manage hotel room allocation, guest registration, and automated billing generation.",
             features: [
-                "Object-Oriented Design (OOP) implementing encapsulation, inheritance, and modular data models.",
-                "Room Availability Matrix tracking single, double, and suite bookings in real time.",
-                "Automated Billing & Receipt Generator for guest checkout operations."
+                "Object-Oriented Design: Implemented encapsulation, inheritance, and modular data models for clean maintenance.",
+                "Real-time Room Availability Matrix: Tracking occupied, booked, and maintenance states for single, double, and suite rooms.",
+                "Automated Invoicing: Generates itemized guest billing statements upon checkout."
             ],
-            tags: ["Java", "OOP", "Database Management", "UI Layout"],
+            tags: ["Java", "OOP Design", "Database Management", "Desktop UI"],
             links: [
-                { text: "View Source", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
-            ]
-        },
-        portfolio: {
-            title: "Personal AI Portfolio Website",
-            badge: "Web Application",
-            role: "Role: UI/UX Designer & Developer",
-            image: "images/portfolio.png",
-            desc: "Modern personal showcase website engineered with obsidian glassmorphism UI, theme accent customizers, and interactive modals.",
-            features: [
-                "Futuristic Obsidian Dark Theme with animated background particles and glow spheres.",
-                "Dynamic Theme Accent Color Switcher (Cyan, Violet, Emerald, Crimson).",
-                "Interactive Project Detail Modals and filterable project grid.",
-                "Fail-safe Contact Form with direct Gmail compose integration."
-            ],
-            tags: ["HTML5", "Vanilla CSS", "JavaScript", "Glassmorphism", "EmailJS"],
-            links: [
-                { text: "View Repository", url: "https://github.com/harivasan068-art/PortfolioWebsite", isPrimary: true, icon: "fab fa-github" }
+                { text: "View Source Code", url: "https://github.com/harivasan068-art", isPrimary: true, icon: "fab fa-github" }
             ]
         },
         techspark: {
-            title: "TechSpark PR & Leadership Activities",
-            badge: "Leadership & Community",
+            title: "TechSpark Technical Community Leadership",
+            badge: "Community & Leadership",
             role: "Role: Public Relations Officer @ TechSpark",
             image: "images/techspark.jpeg",
-            desc: "Leadership and public relations management for TechSpark technical club at Rajalakshmi Institute of Technology.",
+            desc: "Public relations, marketing campaigns, and logistics coordination for TechSpark technical club at Rajalakshmi Institute of Technology.",
             features: [
-                "Organized and coordinated 5+ major technical events, coding contests, and hackathons.",
-                "Managed technical student community engagement reaching over 830+ participants.",
-                "Executed creative social media campaigns, sponsorship outreach, and event promotions."
+                "Organized and coordinated 5+ major college technical events, coding contests, and hackathons.",
+                "Managed technical student community engagement reaching over 830+ active participants.",
+                "Led creative social media promotions, speaker outreach, and corporate sponsorship communications."
             ],
-            tags: ["Leadership", "Public Relations", "Event Management", "Outreach"],
+            tags: ["Leadership", "Event Operations", "Public Relations", "Outreach"],
             links: [
-                { text: "Contact for Collaboration", url: "#contact", isPrimary: true, icon: "fas fa-handshake" }
+                { text: "Get In Touch", url: "#contact", isPrimary: true, icon: "fas fa-envelope" }
             ]
         }
     };
@@ -616,7 +399,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.overflow = "auto";
     };
 
-    // Attach click listeners to all open-modal-btn buttons
     document.querySelectorAll(".open-modal-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -635,17 +417,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && projectModal?.classList.contains("active")) {
-            closeModal();
-        }
-    });
-
     // ==========================================================================
-    // Academic Presentation Achievement Showcase & Interactive Modals
+    // 7. Academic Presentation Achievement Showcase & Interactive Modals
     // ==========================================================================
-    
-    // 1. Showcase Tab Viewport Switcher
     const showcaseTabs = document.querySelectorAll(".showcase-tab");
     const spotlightSingle = document.getElementById("spotlight-single");
     const spotlightDual = document.getElementById("spotlight-dual");
@@ -668,11 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    let currentShowcaseView = "presentation";
-
     const updateShowcaseView = (viewMode) => {
-        currentShowcaseView = viewMode;
-
         showcaseTabs.forEach(tab => {
             const isMatch = tab.getAttribute("data-view") === viewMode;
             tab.classList.toggle("active", isMatch);
@@ -687,181 +457,141 @@ document.addEventListener("DOMContentLoaded", () => {
             spotlightSingle?.classList.add("active");
 
             if (mediaData[viewMode] && spotlightMainImg) {
-                spotlightMainImg.style.opacity = "0.4";
+                spotlightMainImg.style.opacity = "0.5";
                 setTimeout(() => {
                     spotlightMainImg.src = mediaData[viewMode].img;
                     spotlightMainImg.alt = mediaData[viewMode].alt;
                     if (spotlightCaptionTag) spotlightCaptionTag.textContent = mediaData[viewMode].tag;
                     if (spotlightCaptionTitle) spotlightCaptionTitle.textContent = mediaData[viewMode].title;
                     spotlightMainImg.style.opacity = "1";
-                }, 150);
+                }, 120);
             }
         }
     };
 
     showcaseTabs.forEach(tab => {
         tab.addEventListener("click", () => {
-            const viewMode = tab.getAttribute("data-view");
-            if (viewMode) updateShowcaseView(viewMode);
+            const view = tab.getAttribute("data-view");
+            if (view) updateShowcaseView(view);
         });
     });
 
-    // Dual view card clicks
+    // Dual view items click triggers
     document.querySelectorAll(".dual-item").forEach(item => {
         item.addEventListener("click", () => {
             const target = item.getAttribute("data-show-target");
-            if (target) {
-                openCertModal(target);
-            }
+            if (target) updateShowcaseView(target);
         });
     });
 
-    // 2. Interactive 3D Card Tilt & Ambient Specular Glow
-    const academicCard = document.getElementById("academic-card");
-    const academicGlow = document.querySelector(".academic-card-glow");
+    // Interactive Tech Tag Insights in Research Section
+    const tagInsights = {
+        uan: "<strong>Underwater Acoustic Networks:</strong> Overcoming extreme acoustic propagation delay (~1500 m/s), narrow bandwidth, and multi-path transmission conditions through dynamic node discovery.",
+        energy: "<strong>Energy Efficiency:</strong> Addressing non-rechargeable underwater battery limitations via synchronized sleep-wake duty cycles and balanced forwarder selection.",
+        cluster: "<strong>Cluster-Based Routing:</strong> Dynamic cluster-head election factoring residual battery, depth metrics, and link quality to prevent premature node death.",
+        iot: "<strong>IoT Systems:</strong> Connecting oceanographic environmental sensors to surface gateway buoys for real-time telemetry back to land stations.",
+        protocol: "<strong>Protocol Design:</strong> Formulated state machines and packet handshakes evaluated in NS-3 / Aqua-Sim simulation frameworks."
+    };
 
-    if (academicCard) {
-        academicCard.addEventListener("mousemove", (e) => {
-            const rect = academicCard.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-
-            const rotateX = ((y - centerY) / centerY) * -3;
-            const rotateY = ((x - centerX) / centerX) * 4;
-
-            academicCard.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
-
-            if (academicGlow) {
-                const glowX = (x / rect.width) * 100;
-                const glowY = (y / rect.height) * 100;
-                academicGlow.style.background = `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(0, 242, 254, 0.16), transparent 50%), radial-gradient(circle at 75% 70%, rgba(0, 223, 196, 0.08), transparent 45%)`;
-            }
-        });
-
-        academicCard.addEventListener("mouseleave", () => {
-            academicCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
-            if (academicGlow) {
-                academicGlow.style.background = `radial-gradient(circle at 25% 30%, rgba(0, 242, 254, 0.12), transparent 45%), radial-gradient(circle at 75% 70%, rgba(0, 223, 196, 0.08), transparent 45%)`;
-            }
-        });
-    }
-
-    // 3. Interactive Focus Area Pill-Tags
     const techPills = document.querySelectorAll(".tech-pill");
     const insightContent = document.getElementById("insight-content");
-    const tagInsightCard = document.getElementById("tag-insight-card");
-
-    const tagInsights = {
-        uan: "<strong>Underwater Acoustic Networks:</strong> Overcoming extreme acoustic propagation delay (~1500 m/s), low bandwidth, and harsh multi-path transmission conditions through intelligent node discovery.",
-        energy: "<strong>Energy Efficiency:</strong> Dynamic residual battery weighting prevents early node death and balances workload across deep-sea clusters, saving over 28% total network energy.",
-        cluster: "<strong>Cluster-Based Routing:</strong> Multi-hop inter-cluster forwarding with adaptive cluster-head rotation prevents hot-spot depletion near surface sinks.",
-        iot: "<strong>IoT:</strong> Seamless acoustic-to-RF gateway communication for real-time telemetry from Autonomous Underwater Vehicles (AUVs) and sea-floor sensor nodes.",
-        protocol: "<strong>Protocol Design:</strong> Cross-layer MAC & network optimization with synchronized sleep duty-cycles reducing collision overhead and packet drop rates."
-    };
 
     techPills.forEach(pill => {
         pill.addEventListener("click", () => {
-            const tagKey = pill.getAttribute("data-tag");
-            if (!tagKey || !tagInsights[tagKey]) return;
-
             techPills.forEach(p => p.classList.remove("active"));
             pill.classList.add("active");
-
-            if (insightContent && tagInsightCard) {
-                tagInsightCard.style.opacity = "0.5";
-                tagInsightCard.style.transform = "translateY(2px)";
-                setTimeout(() => {
-                    insightContent.innerHTML = tagInsights[tagKey];
-                    tagInsightCard.style.opacity = "1";
-                    tagInsightCard.style.transform = "translateY(0)";
-                }, 150);
+            const tag = pill.getAttribute("data-tag");
+            if (tag && tagInsights[tag] && insightContent) {
+                insightContent.innerHTML = tagInsights[tag];
             }
         });
     });
 
-    // 4. Interactive Certificate & Media Viewer Modal
+    // ==========================================================================
+    // 8. Certificate Modal HD Viewer
+    // ==========================================================================
     const certModalViewer = document.getElementById("cert-modal-viewer");
     const certModalClose = document.getElementById("cert-modal-close");
     const certStageImg = document.getElementById("cert-stage-img");
-    const certModalHeading = document.getElementById("cert-modal-heading");
     const modalTabCert = document.getElementById("modal-tab-cert");
     const modalTabPres = document.getElementById("modal-tab-pres");
-    const zoomInBtn = document.getElementById("zoom-in-btn");
-    const zoomOutBtn = document.getElementById("zoom-out-btn");
-    const zoomResetBtn = document.getElementById("zoom-reset-btn");
+    const certModalHeading = document.getElementById("cert-modal-heading");
 
     let currentZoom = 1;
 
-    const setCertModalMedia = (type) => {
-        currentZoom = 1;
-        if (certStageImg) certStageImg.style.transform = `scale(${currentZoom})`;
+    const applyZoom = () => {
+        if (certStageImg) {
+            certStageImg.style.transform = `scale(${currentZoom})`;
+        }
+    };
 
-        if (type === "presentation") {
-            if (certStageImg) {
-                certStageImg.src = "images/icgetei-presentation.jpg";
-                certStageImg.alt = "ICGETEI 2026 Presentation Photo - Harivasan V";
-            }
-            if (certModalHeading) certModalHeading.textContent = "Presentation Session — ICGETEI 2026";
+    const openCertModal = (initialMode = "cert") => {
+        if (!certModalViewer) return;
+        currentZoom = 1;
+        applyZoom();
+
+        if (initialMode === "pres") {
+            if (certStageImg) certStageImg.src = "images/icgetei-presentation.jpg";
+            if (certModalHeading) certModalHeading.textContent = "Live Presentation — ICGETEI 2026";
             modalTabPres?.classList.add("active");
             modalTabCert?.classList.remove("active");
         } else {
-            if (certStageImg) {
-                certStageImg.src = "images/icgetei-certificate.jpg";
-                certStageImg.alt = "Certificate of Participation ICGETEI 2026 - Harivasan V";
-            }
+            if (certStageImg) certStageImg.src = "images/icgetei-certificate.jpg";
             if (certModalHeading) certModalHeading.textContent = "Certificate of Participation — ICGETEI 2026";
             modalTabCert?.classList.add("active");
             modalTabPres?.classList.remove("active");
         }
-    };
 
-    const openCertModal = (mediaType = "certificate") => {
-        setCertModalMedia(mediaType);
-        certModalViewer?.classList.add("active");
-        certModalViewer?.setAttribute("aria-hidden", "false");
+        certModalViewer.classList.add("active");
+        certModalViewer.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
     };
 
     const closeCertModal = () => {
-        certModalViewer?.classList.remove("active");
-        certModalViewer?.setAttribute("aria-hidden", "true");
+        if (!certModalViewer) return;
+        certModalViewer.classList.remove("active");
+        certModalViewer.setAttribute("aria-hidden", "true");
         document.body.style.overflow = "auto";
-        currentZoom = 1;
-        if (certStageImg) certStageImg.style.transform = `scale(1)`;
     };
 
-    modalTabCert?.addEventListener("click", () => setCertModalMedia("certificate"));
-    modalTabPres?.addEventListener("click", () => setCertModalMedia("presentation"));
+    document.getElementById("btn-view-cert")?.addEventListener("click", () => openCertModal("cert"));
+    document.getElementById("showcase-expand-top-btn")?.addEventListener("click", () => openCertModal("pres"));
+    document.getElementById("spotlight-expand-trigger")?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openCertModal("pres");
+    });
 
-    // Zoom handlers
-    zoomInBtn?.addEventListener("click", () => {
+    modalTabCert?.addEventListener("click", () => {
+        if (certStageImg) certStageImg.src = "images/icgetei-certificate.jpg";
+        if (certModalHeading) certModalHeading.textContent = "Certificate of Participation — ICGETEI 2026";
+        modalTabCert.classList.add("active");
+        modalTabPres?.classList.remove("active");
+    });
+
+    modalTabPres?.addEventListener("click", () => {
+        if (certStageImg) certStageImg.src = "images/icgetei-presentation.jpg";
+        if (certModalHeading) certModalHeading.textContent = "Live Presentation — ICGETEI 2026";
+        modalTabPres.classList.add("active");
+        modalTabCert?.classList.remove("active");
+    });
+
+    document.getElementById("zoom-in-btn")?.addEventListener("click", () => {
         if (currentZoom < 2.5) {
             currentZoom += 0.25;
-            if (certStageImg) certStageImg.style.transform = `scale(${currentZoom})`;
+            applyZoom();
         }
     });
 
-    zoomOutBtn?.addEventListener("click", () => {
-        if (currentZoom > 0.6) {
+    document.getElementById("zoom-out-btn")?.addEventListener("click", () => {
+        if (currentZoom > 0.75) {
             currentZoom -= 0.25;
-            if (certStageImg) certStageImg.style.transform = `scale(${currentZoom})`;
+            applyZoom();
         }
     });
 
-    zoomResetBtn?.addEventListener("click", () => {
+    document.getElementById("zoom-reset-btn")?.addEventListener("click", () => {
         currentZoom = 1;
-        if (certStageImg) certStageImg.style.transform = `scale(1)`;
-    });
-
-    // Triggers for certificate modal
-    document.getElementById("btn-view-cert")?.addEventListener("click", () => openCertModal("certificate"));
-    document.getElementById("showcase-expand-top-btn")?.addEventListener("click", () => {
-        openCertModal(currentShowcaseView === "certificate" ? "certificate" : "presentation");
-    });
-    document.getElementById("spotlight-single")?.addEventListener("click", () => {
-        openCertModal(currentShowcaseView === "certificate" ? "certificate" : "presentation");
+        applyZoom();
     });
 
     if (certModalClose) certModalClose.addEventListener("click", closeCertModal);
@@ -871,55 +601,61 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 5. Interactive Paper Abstract Modal
-    const abstractModalViewer = document.getElementById("abstract-modal-viewer");
-    const abstractModalClose = document.getElementById("abstract-modal-close");
+    // ==========================================================================
+    // 9. Paper Abstract Modal
+    // ==========================================================================
+    const abstractModal = document.getElementById("abstract-modal-viewer");
+    const abstractClose = document.getElementById("abstract-modal-close");
     const btnReadAbstract = document.getElementById("btn-read-abstract");
     const copyCitationBtn = document.getElementById("copy-citation-btn");
-    const bibtexCitation = document.getElementById("bibtex-citation");
 
-    const openAbstractModal = () => {
-        abstractModalViewer?.classList.add("active");
-        abstractModalViewer?.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-    };
-
-    const closeAbstractModal = () => {
-        abstractModalViewer?.classList.remove("active");
-        abstractModalViewer?.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "auto";
-    };
-
-    btnReadAbstract?.addEventListener("click", openAbstractModal);
-    if (abstractModalClose) abstractModalClose.addEventListener("click", closeAbstractModal);
-    if (abstractModalViewer) {
-        abstractModalViewer.addEventListener("click", (e) => {
-            if (e.target === abstractModalViewer) closeAbstractModal();
+    if (btnReadAbstract && abstractModal) {
+        btnReadAbstract.addEventListener("click", () => {
+            abstractModal.classList.add("active");
+            abstractModal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
         });
     }
 
-    // Copy BibTeX button
-    copyCitationBtn?.addEventListener("click", () => {
-        if (bibtexCitation) {
-            navigator.clipboard.writeText(bibtexCitation.textContent).then(() => {
-                const originalHtml = copyCitationBtn.innerHTML;
-                copyCitationBtn.innerHTML = `<i class="fas fa-check" style="color: #10b981;"></i> <span>Copied!</span>`;
-                copyCitationBtn.style.borderColor = "#10b981";
-                setTimeout(() => {
-                    copyCitationBtn.innerHTML = originalHtml;
-                    copyCitationBtn.style.borderColor = "";
-                }, 2200);
-            }).catch(err => {
-                console.error("Clipboard copy failed:", err);
-            });
-        }
-    });
+    if (abstractClose && abstractModal) {
+        abstractClose.addEventListener("click", () => {
+            abstractModal.classList.remove("active");
+            abstractModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "auto";
+        });
 
-    // Global ESC key listener for newly added modals
+        abstractModal.addEventListener("click", (e) => {
+            if (e.target === abstractModal) {
+                abstractModal.classList.remove("active");
+                abstractModal.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "auto";
+            }
+        });
+    }
+
+    // BibTeX Copy
+    if (copyCitationBtn) {
+        copyCitationBtn.addEventListener("click", () => {
+            const bibtexCode = document.getElementById("bibtex-citation")?.innerText || "";
+            navigator.clipboard.writeText(bibtexCode).then(() => {
+                copyCitationBtn.innerHTML = '<i class="fas fa-check"></i> <span>Copied!</span>';
+                setTimeout(() => {
+                    copyCitationBtn.innerHTML = '<i class="fas fa-copy"></i> <span>Copy BibTeX</span>';
+                }, 2000);
+            });
+        });
+    }
+
+    // Escape Key closes all open modals
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-            if (certModalViewer?.classList.contains("active")) closeCertModal();
-            if (abstractModalViewer?.classList.contains("active")) closeAbstractModal();
+            closeModal();
+            closeCertModal();
+            if (abstractModal?.classList.contains("active")) {
+                abstractModal.classList.remove("active");
+                abstractModal.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "auto";
+            }
         }
     });
 });
