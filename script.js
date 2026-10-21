@@ -654,48 +654,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-
-    // ==========================================================================
-    // 10. Interactive Resume Modal Viewer
-    // ==========================================================================
-    const resumeModal = document.getElementById("resume-modal-viewer");
-    const resumeModalClose = document.getElementById("resume-modal-close");
-    const btnPreviewResume = document.getElementById("btn-preview-resume");
-    const heroResumeBtn = document.getElementById("hero-resume-btn");
-
-    const openResumeModal = (e) => {
-        if (resumeModal) {
-            if (e) e.preventDefault();
-            resumeModal.classList.add("active");
-            resumeModal.setAttribute("aria-hidden", "false");
-            document.body.style.overflow = "hidden";
-        }
-    };
-
-    const closeResumeModal = () => {
-        if (resumeModal) {
-            resumeModal.classList.remove("active");
-            resumeModal.setAttribute("aria-hidden", "true");
-            document.body.style.overflow = "auto";
-        }
-    };
-
-    btnPreviewResume?.addEventListener("click", openResumeModal);
-    heroResumeBtn?.addEventListener("click", openResumeModal);
-
-    if (resumeModalClose) resumeModalClose.addEventListener("click", closeResumeModal);
-    if (resumeModal) {
-        resumeModal.addEventListener("click", (e) => {
-            if (e.target === resumeModal) closeResumeModal();
-        });
-    }
-
     // Escape Key closes all open modals
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
             closeModal();
             closeCertModal();
-            closeResumeModal();
             if (abstractModal?.classList.contains("active")) {
                 abstractModal.classList.remove("active");
                 abstractModal.setAttribute("aria-hidden", "true");
