@@ -78,25 +78,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const navLinksMenu = document.getElementById("nav-links");
 
     if (menuToggle && navLinksMenu) {
-        menuToggle.addEventListener("click", () => {
-            navLinksMenu.classList.toggle("active");
+        const toggleMenu = (open) => {
+            const shouldOpen = typeof open === "boolean" ? open : !navLinksMenu.classList.contains("active");
+            navLinksMenu.classList.toggle("active", shouldOpen);
+            document.body.style.overflow = shouldOpen ? "hidden" : "";
             const icon = menuToggle.querySelector("i");
             if (icon) {
-                icon.classList.toggle("fa-bars");
-                icon.classList.toggle("fa-times");
+                icon.classList.toggle("fa-bars", !shouldOpen);
+                icon.classList.toggle("fa-times", shouldOpen);
             }
+        };
+
+        menuToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleMenu();
         });
 
         // Close menu when a link is clicked
         navLinksMenu.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", () => {
-                navLinksMenu.classList.remove("active");
-                const icon = menuToggle.querySelector("i");
-                if (icon) {
-                    icon.classList.add("fa-bars");
-                    icon.classList.remove("fa-times");
-                }
+                toggleMenu(false);
             });
+        });
+
+        // Close when clicking outside navbar
+        document.addEventListener("click", (e) => {
+            if (navLinksMenu.classList.contains("active") && !navbar?.contains(e.target)) {
+                toggleMenu(false);
+            }
         });
     }
 

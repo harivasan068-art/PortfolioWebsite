@@ -2304,18 +2304,41 @@ body.light-theme .citation-box {
 }
 
 /* ==========================================================================
-   Responsive Breakpoints
+   Comprehensive Mobile & Tablet Responsive Architecture
+   Breakpoints: 1024px (Tablets), 768px (Large Phones/Tablets), 480px (Smartphones), 360px (Compact)
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   1. Tablet & Small Laptop Screens (<= 1024px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
+  .navbar {
+    padding: 14px 6%;
+  }
+
+  section {
+    padding: 80px 6%;
+  }
+
   .hero {
-    flex-direction: column;
+    flex-direction: column-reverse;
     text-align: center;
-    padding-top: 120px;
+    padding-top: 110px;
+    padding-bottom: 60px;
+    gap: 40px;
+    min-height: auto;
   }
 
   .hero-content {
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .status-pill {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-actions {
@@ -2328,71 +2351,677 @@ body.light-theme .citation-box {
 
   .about-grid {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
 
   .academic-card {
     grid-template-columns: 1fr;
     padding: 24px;
+    gap: 28px;
   }
 
   .tech-matrix-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .stats-strip {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+    padding: 20px;
   }
 
   .stat-cell {
     border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px;
+  }
+
+  .stat-cell:nth-child(3),
+  .stat-cell:nth-child(4) {
+    border-bottom: none;
   }
 
   .contact-wrapper {
     grid-template-columns: 1fr;
+    gap: 28px;
   }
 }
 
+/* --------------------------------------------------------------------------
+   2. Mobile & Phablet Screens (<= 768px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
+  html {
+    scroll-padding-top: 70px;
+  }
+
+  body {
+    font-size: 14.5px;
+  }
+
+  .navbar {
+    padding: 12px 18px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  /* Slide-down Mobile App Navigation Drawer */
   .nav-links {
     position: fixed;
-    top: 70px;
-    left: -100%;
+    top: 64px;
+    left: 0;
     width: 100%;
-    height: calc(100vh - 70px);
-    background: var(--bg-primary);
+    height: calc(100dvh - 64px);
+    background: rgba(9, 13, 22, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     flex-direction: column;
-    padding: 30px;
-    gap: 20px;
-    transition: var(--transition);
+    align-items: stretch;
+    padding: 24px 20px;
+    gap: 10px;
     border-top: 1px solid var(--border-subtle);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition);
+    overflow-y: auto;
+    z-index: 999;
+  }
+
+  body.light-theme .nav-links {
+    background: rgba(255, 255, 255, 0.98);
   }
 
   .nav-links.active {
-    left: 0;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav-links a {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--transition);
+  }
+
+  body.light-theme .nav-links a {
+    background: rgba(15, 23, 42, 0.03);
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: var(--accent-blue);
+  }
+
+  .nav-links a::after {
+    display: none;
   }
 
   .menu-toggle {
     display: flex;
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Section Spacing & Headings */
+  section {
+    padding: 60px 18px;
+  }
+
+  .section-header {
+    margin-bottom: 36px;
+  }
+
+  .section-tag {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 85px 18px 45px 18px;
+    gap: 32px;
   }
 
   .hero-name {
-    font-size: 40px;
+    font-size: clamp(34px, 8vw, 44px);
+    letter-spacing: -1px;
   }
 
   .hero-role {
+    font-size: clamp(17px, 4.5vw, 21px);
+    margin-bottom: 14px;
+  }
+
+  .status-pill {
+    font-size: 11.5px;
+    padding: 6px 12px;
+    max-width: 100%;
+    line-height: 1.4;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .hero-description {
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .portrait-card {
+    max-width: 280px;
+    width: 100%;
+  }
+
+  .portrait-frame {
+    width: 100%;
+    height: 320px;
+    border-radius: var(--radius-md);
+  }
+
+  .portrait-meta-card {
+    width: 92%;
+    margin-top: -20px;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .meta-primary {
+    font-size: 12px;
+  }
+
+  .meta-secondary {
+    font-size: 10.5px;
+  }
+
+  /* About Section */
+  .about-bio-card {
+    padding: 24px 18px;
+  }
+
+  .bio-heading {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .about-bio-card p {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  .pillar-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .pillar-icon-box {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  /* Projects Filter Swiper */
+  .project-filters {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 4px 0 10px 0;
+    margin-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .project-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    flex-shrink: 0;
+    padding: 7px 15px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .project-image-wrapper {
+    height: 190px;
+  }
+
+  .project-content {
+    padding: 18px 16px;
+  }
+
+  .project-title {
+    font-size: 17px;
+  }
+
+  .project-desc {
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+
+  /* Research Showcase */
+  .spotlight-viewport {
+    height: 260px;
+  }
+
+  .showcase-nav-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .showcase-tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .showcase-tab {
+    flex: 1;
+    justify-content: center;
+    font-size: 11.5px;
+    padding: 7px 8px;
+  }
+
+  .showcase-zoom-hint {
+    justify-content: center;
+    padding: 7px 10px;
+    width: 100%;
+  }
+
+  .paper-title {
+    font-size: 19px;
+    line-height: 1.35;
+  }
+
+  .metadata-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .metadata-badge {
+    padding: 8px 12px;
+  }
+
+  .academic-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .academic-actions .btn {
+    width: 100%;
+  }
+
+  .cert-direct-link {
+    width: 100%;
+    height: 42px;
+  }
+
+  /* Timeline */
+  .timeline-container::before {
+    left: 14px;
+  }
+
+  .timeline-item {
+    padding-left: 44px;
+    margin-bottom: 24px;
+  }
+
+  .timeline-dot {
+    left: 0;
+    top: 6px;
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .timeline-card {
+    padding: 20px 16px;
+  }
+
+  .timeline-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .timeline-role {
+    font-size: 16px;
+  }
+
+  .timeline-cert-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .timeline-cert-row .btn {
+    width: 100%;
+  }
+
+  /* Credentials */
+  .credentials-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .credential-card {
+    padding: 22px 18px;
+  }
+
+  .credential-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .credential-actions .btn {
+    width: 100%;
+  }
+
+  /* Contact & Form */
+  .contact-info-card,
+  .contact-form-card {
+    padding: 22px 18px;
+  }
+
+  .contact-item {
+    padding: 10px 12px;
+  }
+
+  /* Prevent iOS Safari Auto-Zoom on form focus */
+  .form-control {
+    font-size: 16px;
+    padding: 11px 13px;
+  }
+
+  .form-submit-actions .btn {
+    width: 100%;
+  }
+
+  /* Modals on Mobile */
+  .modal-card,
+  .cert-modal-dialog,
+  .abstract-modal-dialog {
+    width: 95%;
+    max-height: 88vh;
+    border-radius: var(--radius-md);
+  }
+
+  .modal-header img {
+    height: 180px;
+  }
+
+  .modal-body {
+    padding: 20px 16px;
+  }
+
+  .modal-title {
     font-size: 19px;
   }
 
-  .credentials-grid {
-    grid-template-columns: 1fr;
+  .modal-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-links .project-btn {
+    width: 100%;
+  }
+
+  .cert-viewer-stage {
+    height: 300px;
+  }
+
+  .cert-modal-header {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cert-modal-controls {
+    margin-right: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .cert-modal-footer {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .cert-meta-info {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .cert-modal-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cert-modal-actions .btn {
+    flex: 1;
+    font-size: 12px;
+    padding: 9px;
+  }
+
+  .abstract-modal-scroll {
+    padding: 16px;
+  }
+
+  .metrics-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .metric-stat-card {
+    padding: 10px;
+  }
+
+  .metric-stat-number {
+    font-size: 19px;
   }
 
   .footer-right {
     align-items: flex-start;
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Small Smartphone Screens (<= 480px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  section {
+    padding: 50px 14px;
+  }
+
+  .hero {
+    padding: 75px 14px 35px 14px;
+    gap: 26px;
+  }
+
+  .hero-name {
+    font-size: 32px;
+  }
+
+  .hero-role {
+    font-size: 17px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .hero-social-strip {
+    width: 100%;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .social-chip {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .portrait-card {
+    max-width: 250px;
+  }
+
+  .portrait-frame {
+    height: 290px;
+  }
+
+  /* Compact 2x2 Stats Strip */
+  .stats-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 14px 10px;
+  }
+
+  .stat-cell {
+    padding: 8px 4px;
+  }
+
+  .stat-val {
+    font-size: 19px;
+  }
+
+  .stat-caption {
+    font-size: 10px;
+  }
+
+  .chip {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  .chip i {
+    font-size: 18px;
+    width: 20px;
+  }
+
+  .chip-name {
+    font-size: 13px;
+  }
+
+  .chip-sub {
+    font-size: 11px;
+  }
+
+  .project-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .project-btn {
+    width: 100%;
+  }
+
+  .spotlight-viewport {
+    height: 220px;
+  }
+
+  .spotlight-floating-badges {
+    top: 8px;
+    left: 8px;
+    gap: 4px;
+  }
+
+  .floating-badge {
+    padding: 3px 7px;
+    font-size: 10px;
+  }
+
+  .paper-title {
+    font-size: 17px;
+  }
+
+  .tech-pill {
+    font-size: 10.5px;
+    padding: 4px 7px;
+  }
+
+  #scroll-top {
+    bottom: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Extra Small / Compact Devices (<= 360px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 360px) {
+  .hero-name {
+    font-size: 28px;
+  }
+
+  .portrait-card {
+    max-width: 220px;
+  }
+
+  .portrait-frame {
+    height: 260px;
   }
 
   .stats-strip {
     grid-template-columns: 1fr;
   }
+
+  .stat-cell {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .stat-cell:last-child {
+    border-bottom: none;
+  }
 }
+
