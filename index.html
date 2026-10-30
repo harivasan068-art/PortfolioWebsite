@@ -898,13 +898,13 @@
                     <h3>Contact Information</h3>
                     <p>I am open to internship opportunities, research collaborations, and full-stack software development projects.</p>
 
-                    <div class="contact-item">
+                    <a href="mailto:harivasan068@gmail.com" class="contact-item" style="text-decoration: none; display: flex;">
                         <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                         <div class="contact-details">
                             <span>Email</span>
                             <h4>harivasan068@gmail.com</h4>
                         </div>
-                    </div>
+                    </a>
 
                     <div class="contact-item">
                         <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
@@ -941,10 +941,8 @@
 
                 <!-- Contact Form Card -->
                 <div class="contact-form-card" data-aos="fade-left">
-                    <form id="contact-form" action="https://formsubmit.co/harivasan068@gmail.com" method="POST">
-                        <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_template" value="table">
-                        <input type="hidden" name="_subject" value="New Portfolio Contact Submission">
+                    <form id="contact-form">
+                        <div id="form-status-alert" class="form-status-alert" style="display: none;"></div>
 
                         <div class="form-group">
                             <label for="name">Your Name</label>
@@ -962,16 +960,19 @@
                         </div>
 
                         <div class="form-submit-actions">
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%;">
                                 <span>Send Message</span>
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                             
-                            <a id="gmail-compose-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=Portfolio%20Inquiry" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center; justify-content: center;">
+                            <a id="gmail-compose-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=Portfolio%20Inquiry" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; text-align: center; justify-content: center;">
                                 <i class="fab fa-google" style="color: #ea4335;"></i>
-                                <span>Direct Gmail Web Tab</span>
+                                <span>Compose in Gmail Web</span>
                             </a>
                         </div>
+                        <p class="form-guarantee-note">
+                            <i class="fas fa-shield-alt" style="color: var(--accent-blue);"></i> Messages delivered directly to <strong>harivasan068@gmail.com</strong>
+                        </p>
                     </form>
                 </div>
             </div>

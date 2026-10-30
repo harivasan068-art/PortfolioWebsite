@@ -1806,6 +1806,49 @@ textarea.form-control {
   gap: 10px;
 }
 
+.form-status-alert {
+  padding: 14px 16px;
+  border-radius: var(--radius-xs);
+  margin-bottom: 18px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.8);
+  font-size: 13.5px;
+  transition: var(--transition);
+}
+
+.form-status-alert.success {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.form-status-alert.info {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+body.light-theme .form-status-alert {
+  background: #f8fafc;
+}
+
+body.light-theme .form-status-alert.success {
+  background: #ecfdf5;
+}
+
+body.light-theme .form-status-alert.info {
+  background: #f0f9ff;
+}
+
+.form-guarantee-note {
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: var(--text-sub);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
 /* ==========================================================================
    Modals
    ========================================================================== */

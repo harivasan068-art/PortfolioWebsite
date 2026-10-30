@@ -179,6 +179,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailInput = document.getElementById("email");
     const messageInput = document.getElementById("message");
     const gmailComposeBtn = document.getElementById("gmail-compose-btn");
+    const formStatusAlert = document.getElementById("form-status-alert");
+
+    const TARGET_EMAIL = "harivasan068@gmail.com";
 
     function updateGmailLink() {
         if (!gmailComposeBtn) return;
@@ -186,10 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const emailVal = emailInput?.value.trim() || "";
         const messageVal = messageInput?.value.trim() || "";
 
-        const subject = nameVal ? `Inquiry from ${nameVal}` : "Software Engineering Inquiry";
+        const subject = nameVal ? `Portfolio Inquiry from ${nameVal}` : "Software Engineering Inquiry";
         const body = `Hi Hari,\n\n${messageVal}\n\nFrom:\nName: ${nameVal}\nEmail: ${emailVal}`;
 
-        gmailComposeBtn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        gmailComposeBtn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TARGET_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
     [nameInput, emailInput, messageInput].forEach(input => {
@@ -214,31 +217,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending message...';
             }
 
-            let sent = false;
+            const subject = `Portfolio Inquiry from ${nameVal}`;
+            const body = `Hi Hari,\n\n${messageVal}\n\nFrom:\nName: ${nameVal}\nEmail: ${emailVal}`;
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TARGET_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const mailtoUrl = `mailto:${encodeURIComponent(TARGET_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-            try {
-                const response = await fetch("https://formsubmit.co/ajax/harivasan068@gmail.com", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-                    body: JSON.stringify({
+            let sentWithEmailJS = false;
+
+            // Attempt 1: Try EmailJS background dispatch
+            if (typeof emailjs !== "undefined") {
+                try {
+                    await emailjs.send("service_b9krrna", "template_7tyksk8", {
                         name: nameVal,
                         email: emailVal,
                         message: messageVal,
-                        _subject: `Portfolio Message from ${nameVal}`
-                    })
-                });
-
-                if (response.ok) {
-                    sent = true;
+                        reply_to: emailVal,
+                        to_name: "Hari Vasan"
+                    }, "60vg5CdeRJjgUJNRv");
+                    sentWithEmailJS = true;
+                } catch (err) {
+                    console.warn("EmailJS background dispatch failed (e.g. Gmail token expired):", err);
                 }
-            } catch (err) {
-                console.warn("FormSubmit fetch error:", err);
             }
 
             if (submitBtn) {
@@ -246,14 +248,55 @@ document.addEventListener("DOMContentLoaded", () => {
                 submitBtn.innerHTML = originalBtnHtml;
             }
 
-            // Also open Gmail compose as a direct, reliable bridge
-            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=harivasan068@gmail.com&su=${encodeURIComponent("Portfolio Message from " + nameVal)}&body=${encodeURIComponent("Hi Hari,\n\n" + messageVal + "\n\nFrom:\nName: " + nameVal + "\nEmail: " + emailVal)}`;
-            window.open(gmailUrl, "_blank");
+            if (sentWithEmailJS) {
+                if (formStatusAlert) {
+                    formStatusAlert.style.display = "block";
+                    formStatusAlert.className = "form-status-alert success";
+                    formStatusAlert.innerHTML = `
+                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 18px; margin-top: 2px;"></i>
+                            <div>
+                                <strong style="color: #10b981;">Message Sent Successfully!</strong>
+                                <p style="margin: 4px 0 0; font-size: 13px; color: var(--text-muted);">Your email has been sent directly to <strong>harivasan068@gmail.com</strong>. Hari will respond shortly.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                contactForm.reset();
+                updateGmailLink();
+                return;
+            }
 
-            alert("Thank you! Opening your Gmail compose window to send directly to harivasan068@gmail.com.");
-            contactForm.reset();
+            // Fallback (EmailJS pending token reconnect): Launch direct mail composer
+            if (formStatusAlert) {
+                formStatusAlert.style.display = "block";
+                formStatusAlert.className = "form-status-alert info";
+                formStatusAlert.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-envelope-open-text" style="color: var(--accent-cyan); font-size: 18px; margin-top: 2px;"></i>
+                            <div>
+                                <strong>Message Prepared for harivasan068@gmail.com</strong>
+                                <p style="margin: 4px 0 0; font-size: 13px; color: var(--text-muted);">Launching your mail client. If it did not open automatically, click a button below to send your pre-filled message:</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                            <a href="${gmailUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding: 8px 14px; font-size: 12.5px; text-decoration: none;">
+                                <i class="fab fa-google"></i> Open in Gmail Web
+                            </a>
+                            <a href="${mailtoUrl}" class="btn btn-secondary" style="padding: 8px 14px; font-size: 12.5px; text-decoration: none;">
+                                <i class="fas fa-envelope"></i> Open Mail App
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Trigger mailto protocol to open device email client
+            window.location.href = mailtoUrl;
         });
     }
+
 
     // ==========================================================================
     // 6. Interactive Project Detail Modals Dataset & Handler
